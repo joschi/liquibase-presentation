@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+    <changeSet id="add-id-column" author="joschi">
+        <preConditions>
+            <tableExists tableName="addressbook_entries"/>
+        </preConditions>
+        
+        <addColumn tableName="addressbook_entries">
+		<column name="ID" type="INT(10)" autoIncrement="true">
+			<constraints nullable="false"/>
+		</column>
+	</addColumn>
+    </changeSet>
+
+    <changeSet id="add-primary-key" author="joschi">
+        <preConditions onFail="CONTINUE">
+        	<not>
+			<dbms type="H2"/>
+		</not>
+		<columnExists tableName="addressbook_entries" columnName="ID"/>
+        </preConditions>
+        
+        <addPrimaryKey tableName="addressbook_entries" columnNames="ID"/>
+    </changeSet>
+
+</databaseChangeLog>

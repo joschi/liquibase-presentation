@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="change-column-type" author="joschi">
+        <preConditions>
+            <tableExists tableName="addressbook_entries"/>
+            <tableExists tableName="address_data"/>
+            <tableExists tableName="phone_data"/>
+        </preConditions>
+
+        <createView viewName="addressbook">
+            SELECT firstname,lastname,street,postcode,city,phone FROM addressbook_entries
+            JOIN address_data ON addressbook_entries.ID = address_data.entry_ID
+            JOIN phone_data ON addressbook_entries.ID = phone_data.entry_ID 
+        </createView>
+    </changeSet>
+</databaseChangeLog>

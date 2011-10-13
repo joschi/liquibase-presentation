@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <preConditions>
+        <dbms type="h2"/>
+    </preConditions>
+
+    <include file="00-init.xml" relativeToChangelogFile="true"/>
+       
+    <include file="01-add-primary-key.xml" relativeToChangelogFile="true"/>
+    <include file="02-add-not-null-constraint.xml" relativeToChangelogFile="true"/>
+    <include file="03-tag-database.xml" relativeToChangelogFile="true"/>
+    <include file="04-split-table.xml" relativeToChangelogFile="true"/>
+    <include file="05-add-foreign-keys.xml" relativeToChangelogFile="true"/>
+    <include file="06-change-column-type.xml" relativeToChangelogFile="true"/>
+    <include file="07-merge-columns.xml" relativeToChangelogFile="true"/>
+    <include file="08-create-view.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
