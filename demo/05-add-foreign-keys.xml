@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="add-foreign-keys" author="joschi">
+        <preConditions>
+            <tableExists tableName="addressbook_entries"/>
+            <tableExists tableName="address_data"/>
+        </preConditions>
+
+        <addForeignKeyConstraint baseTableName="address_data"
+                                 baseColumnNames="entry_ID"
+                                 constraintName="fk_address_data_addressbook_entries"
+                                 referencedTableName="addressbook_entries"
+                                 referencedColumnNames="ID"/>
+    </changeSet>
+</databaseChangeLog>

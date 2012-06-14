@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="create-address-data" author="joschi">
+        <preConditions>
+            <tableExists tableName="addressbook_entries"/>
+        </preConditions>
+
+        <createTable tableName="address_data">
+            <column name="ID" autoIncrement="true" type="INT(10)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="entry_ID" type="INT(10)">
+                <!--constraints references="addressbook_entries.ID"/-->
+            </column>
+            <column name="street_name" type="VARCHAR(64)"/>
+            <column name="street_number" type="VARCHAR(64)"/>
+            <column name="postcode" type="INT(5)"/>
+            <column name="city" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="migrate-address-data" author="joschi">
+        <preConditions>
+            <tableExists tableName="address_data"/>
+        </preConditions>
+
+        <sql>
+            INSERT INTO address_data (entry_ID,street_name,street_number,postcode,city)
+            SELECT ID,street_name,street_number,postcode,city FROM addressbook_entries
+        </sql>
+
+        <rollback>
+            <sql>
+                UPDATE addressbook_entries a SET
+                street_name = (SELECT street_name FROM address_data WHERE entry_ID = a.ID),
+                street_number = (SELECT street_number FROM address_data WHERE entry_ID = a.ID),
+                postcode = (SELECT postcode FROM address_data WHERE entry_ID = a.ID),
+                city = (SELECT city FROM address_data WHERE entry_ID = a.ID)
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="remove-address-data" author="joschi">
+        <preConditions>
+            <tableExists tableName="address_data"/>
+        </preConditions>
+
+        <dropColumn tableName="addressbook_entries" columnName="street_name"/>
+        <dropColumn tableName="addressbook_entries" columnName="street_number"/>
+        <dropColumn tableName="addressbook_entries" columnName="postcode"/>
+        <dropColumn tableName="addressbook_entries" columnName="city"/>
+
+        <rollback>
+            <addColumn tableName="addressbook_entries">
+                <column name="street_name" type="VARCHAR(64)"/>
+                <column name="street_number" type="VARCHAR(64)"/>
+                <column name="postcode" type="INT(5)"/>
+                <column name="city" type="VARCHAR(64)"/>
+            </addColumn>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create-phone-data" author="joschi">
+        <preConditions>
+            <tableExists tableName="addressbook_entries"/>
+        </preConditions>
+
+        <createTable tableName="phone_data">
+            <column name="ID" autoIncrement="true" type="NUMERIC">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="entry_ID" type="INT(10)"/>
+            <column name="phone" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="migrate-phone-data" author="joschi">
+        <preConditions>
+            <tableExists tableName="phone_data"/>
+        </preConditions>
+
+        <sql>
+            INSERT INTO phone_data (entry_ID,phone)
+            SELECT ID,phone FROM addressbook_entries
+        </sql>
+
+        <rollback>
+            <sql>
+                UPDATE addressbook_entries a SET a.phone = (
+                SELECT p.phone FROM phone_data p WHERE a.ID = p.entry_ID
+                )
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="remove-phone-data" author="joschi">
+        <preConditions>
+            <tableExists tableName="phone_data"/>
+        </preConditions>
+
+        <dropColumn tableName="addressbook_entries" columnName="phone"/>
+
+        <rollback>
+            <addColumn tableName="addressbook_entries">
+                <column name="phone" type="BIGINT"/>
+            </addColumn>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
